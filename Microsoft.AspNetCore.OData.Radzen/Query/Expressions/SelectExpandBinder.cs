@@ -227,18 +227,21 @@ namespace Microsoft.AspNetCore.OData.Query.Expressions
                 }
             }
 
-            if (_settings.HandleNullPropagation == HandleNullPropagationOption.True)
+            if (!property.Type.IsCollection())
             {
-                // source == null ? null : propertyValue
-                propertyValue = Expression.Condition(
-                    test: Expression.Equal(source, Expression.Constant(value: null)),
-                    ifTrue: Expression.Constant(value: null, type: nullablePropertyType),
-                    ifFalse: nullablePropertyValue);
-            }
-            else
-            {
-                // need to cast this to nullable as EF would fail while materializing if the property is not nullable and source is null.
-                propertyValue = nullablePropertyValue;
+                if (_settings.HandleNullPropagation == HandleNullPropagationOption.True)
+                {
+                    // source == null ? null : propertyValue
+                    propertyValue = Expression.Condition(
+                        test: Expression.Equal(source, Expression.Constant(value: null)),
+                        ifTrue: Expression.Constant(value: null, type: nullablePropertyType),
+                        ifFalse: nullablePropertyValue);
+                }
+                else
+                {
+                    // need to cast this to nullable as EF would fail while materializing if the property is not nullable and source is null.
+                    propertyValue = nullablePropertyValue;
+                }
             }
 
             return propertyValue;
@@ -562,16 +565,22 @@ namespace Microsoft.AspNetCore.OData.Query.Expressions
             //      source.Select((ElementType element) => new Wrapper { })
             Expression selectedExpresion = Expression.Call(GetSelectMethod(elementType, projection.Type), source, selector);
 
-            if (_settings.HandleNullPropagation == HandleNullPropagationOption.True)
+            if (!source.Type.IsCollection())
             {
-                // source == null ? null : projectedCollection
-                return Expression.Condition(
-                       test: Expression.Equal(source, Expression.Constant(null)),
-                       ifTrue: Expression.Constant(null, selectedExpresion.Type),
-                       ifFalse: selectedExpresion);
+                if (_settings.HandleNullPropagation == HandleNullPropagationOption.True)
+                {
+                    // source == null ? null : projectedCollection
+                    return Expression.Condition(
+                           test: Expression.Equal(source, Expression.Constant(null)),
+                           ifTrue: Expression.Constant(null, selectedExpresion.Type),
+                           ifFalse: selectedExpresion);
+                }
+                else
+                {
+                    return selectedExpresion;
+                }
             }
-            else
-            {
+            else {
                 return selectedExpresion;
             }
         }

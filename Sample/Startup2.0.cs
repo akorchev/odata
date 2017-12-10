@@ -6,64 +6,63 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Serialization;
-using Microsoft.AspNetCore.OData.Extensions;
-using Microsoft.AspNetCore.OData;
-using Microsoft.AspNetCore.OData.Builder;
-using Microsoft.AspNetCore.OData.Routing.Conventions;
 using Microsoft.OData.Edm;
+using CodewareDb.Models.CodewareDb;
+using CodewareDb.Data;
+using Microsoft.AspNet.OData.Builder;
+using Microsoft.AspNet.OData.Extensions;
 
 namespace Sample
 {
-  public class Startup
-  {
-    public Startup(IHostingEnvironment env)
+    public class Startup
     {
-      var builder = new ConfigurationBuilder()
-        .SetBasePath(env.ContentRootPath)
-        .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-        .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
-        .AddEnvironmentVariables();
-      Configuration = builder.Build();
-    }
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
 
-    public IConfigurationRoot Configuration { get; }
+        public IConfiguration Configuration { get; }
 
-    // This method gets called by the runtime. Use this method to add services to the container.
-    public void ConfigureServices(IServiceCollection services)
-    {
-      services.AddOData();
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddOData();
+            services.AddODataQueryFilter();
+            /*
+            string connectionString = "Server=localhost;Initial Catalog=CodewareDB;Persist Security Info=False;User ID=sa;Password=passw0rdMSSQL;MultipleActiveResultSets=False;Encrypt=false;TrustServerCertificate=true;Connection Timeout=30";
 
-            // Add framework services.
-            //      services.AddMvc().AddJsonOptions(options => {
-            //         options.SerializerSettings.ContractResolver = new DefaultContractResolver();
-            //        });
-
-            //services.AddSingleton<NorthwindContext>();
+            services.AddDbContext<CodewareDbContext>(options =>
+                            options.UseSqlServer(connectionString));*/
             string connectionString = "Server=localhost;Initial Catalog=Northwind;Persist Security Info=False;User ID=sa;Password=passw0rdMSSQL;MultipleActiveResultSets=False;Encrypt=false;TrustServerCertificate=true;Connection Timeout=30";
 
             services.AddDbContext<MyApp.Data.NorthwindContext>(options =>
                             options.UseSqlServer(connectionString));
-    }
+        }
 
-    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-    public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
-    {
-      loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-      loggerFactory.AddDebug();
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app,
+            IHostingEnvironment env)
+        {
+            IServiceProvider provider = app.ApplicationServices.GetRequiredService<IServiceProvider>();
 
-      IAssemblyProvider provider = app.ApplicationServices.GetRequiredService<IAssemblyProvider>();
-      IEdmModel model = GetEdmModel(provider);
+            //app.UseMvc(builder => builder.MapODataServiceRoute("odata", "odata/CodewareDb", GetCodewareDbEdmModel(provider)));
+            app.UseMvc(builder => builder.MapODataServiceRoute("odata", "odata/Northwind", GetNorthwindEdmModel(provider)));
+        }
 
-      // Single
-      app.UseMvc(builder => builder.MapODataRoute("odata/Northwind", model));
+        private static IEdmModel GetCodewareDbEdmModel(IServiceProvider provider)
+        {
+            var builder = new ODataConventionModelBuilder(provider);
+            builder.ContainerName = "CodewareDbContext";
 
-    }
+            builder.EntitySet<Detail>("Details");
+            builder.EntitySet<Company>("Companies");
+            builder.EntitySet<Project>("Projects");
 
-    private static IEdmModel GetEdmModel(IAssemblyProvider provider)
-    {
+            return builder.GetEdmModel();
+        }
+
+        private static IEdmModel GetNorthwindEdmModel(IServiceProvider provider)
+        {
             var northwindBuilder = new ODataConventionModelBuilder(provider);
             northwindBuilder.ContainerName = "NorthwindContext";
 
@@ -83,5 +82,5 @@ namespace Sample
 
             return northwindBuilder.GetEdmModel();
         }
-  }
+    }
 }

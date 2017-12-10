@@ -11,7 +11,24 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../Microsoft.AspNetCore.OData.Radzen/Microsoft.AspNetCore.OData.Radzen.csproj" />
+    <Compile Remove="2.0\**" />
+    <Compile Remove="Controllers\CodewareDB\**" />
+    <Compile Remove="Models\CodewareDB\**" />
+    <Content Remove="2.0\**" />
+    <Content Remove="Controllers\CodewareDB\**" />
+    <Content Remove="Models\CodewareDB\**" />
+    <EmbeddedResource Remove="2.0\**" />
+    <EmbeddedResource Remove="Controllers\CodewareDB\**" />
+    <EmbeddedResource Remove="Models\CodewareDB\**" />
+    <None Remove="2.0\**" />
+    <None Remove="Controllers\CodewareDB\**" />
+    <None Remove="Models\CodewareDB\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Data\CodewareDbContext.cs" />
+    <Compile Remove="Program2.0.cs" />
+    <Compile Remove="Startup2.0.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,6 +36,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Routing" Version="1.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Server.IISIntegration" Version="1.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="1.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="1.1.4" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="1.1.1" />
@@ -27,7 +45,14 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="1.1.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="1.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Microsoft.AspNetCore.OData.Radzen\Microsoft.AspNetCore.OData.Radzen.csproj" />
   </ItemGroup>
 
 </Project>

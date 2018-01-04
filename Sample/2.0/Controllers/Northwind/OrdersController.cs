@@ -16,8 +16,8 @@ namespace MyApp.Controllers.Northwind
 
   [EnableQuery]
   [ODataRoutePrefix("odata/Northwind/Orders")]
-  public partial class OrdersController : Controller
-  {
+  public partial class OrdersController : ODataController
+    {
     private Data.NorthwindContext context;
 
     public OrdersController(Data.NorthwindContext context)
@@ -25,7 +25,7 @@ namespace MyApp.Controllers.Northwind
       this.context = context;
     }
     // GET /odata/Northwind/Orders
-    [HttpGet]
+    //[HttpGet]
     public IEnumerable<Models.Northwind.Order> Get()
     {
       var items = this.context.Orders.AsQueryable<Models.Northwind.Order>();

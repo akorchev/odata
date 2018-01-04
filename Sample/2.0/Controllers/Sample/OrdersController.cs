@@ -16,7 +16,7 @@ namespace MyApp.Controllers.Sample
 
   [EnableQuery]
   [ODataRoutePrefix("odata/Sample/Orders")]
-  public partial class OrdersController : Controller
+  public partial class OrdersController : ODataController
   {
     private Data.SampleContext context;
 
@@ -24,9 +24,9 @@ namespace MyApp.Controllers.Sample
     {
       this.context = context;
     }
-    // GET /odata/Sample/Orders
-    [HttpGet]
-    public IEnumerable<Models.Sample.Order> GetOrders()
+        // GET /odata/Sample/Orders
+        //[HttpGet]
+    public IEnumerable<Models.Sample.Order> Get()
     {
       var items = this.context.Orders.AsQueryable<Models.Sample.Order>();
 

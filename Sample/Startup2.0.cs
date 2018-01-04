@@ -47,17 +47,12 @@ namespace Sample
 
             app.UseMvc(builder => {
                 builder.Count().Filter().OrderBy().Expand().Select().MaxTop(null);
-                builder.MapODataServiceRoute("odata", "odata/CodewareDb", GetCodewareDbEdmModel(provider));
-            });
 
-            app.UseMvc(builder => {
-                builder.Count().Filter().OrderBy().Expand().Select().MaxTop(null);
-                builder.MapODataServiceRoute("odata", "odata/Northwind", GetNorthwindEdmModel(provider));
-            });
+                builder.MapODataServiceRoute("odata/CodewareDb", "odata/CodewareDb", GetCodewareDbEdmModel(provider));
 
-            app.UseMvc(builder => {
-                builder.Count().Filter().OrderBy().Expand().Select().MaxTop(null);
-                builder.MapODataServiceRoute("odata", "odata/Sample", GetSampleEdmModel(provider));
+                builder.MapODataServiceRoute("odata/Sample", "odata/Sample", GetSampleEdmModel(provider));
+
+                builder.MapODataServiceRoute("odata/Northwind", "odata/Northwind", GetNorthwindEdmModel(provider));
             });
         }
 

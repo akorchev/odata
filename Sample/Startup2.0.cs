@@ -28,15 +28,15 @@ namespace Sample
         {
             services.AddOData();
             services.AddODataQueryFilter();
-            /*
-            string connectionString = "Server=localhost;Initial Catalog=CodewareDB;Persist Security Info=False;User ID=sa;Password=passw0rdMSSQL;MultipleActiveResultSets=False;Encrypt=false;TrustServerCertificate=true;Connection Timeout=30";
 
             services.AddDbContext<CodewareDbContext>(options =>
-                            options.UseSqlServer(connectionString));*/
-            string connectionString = "Server=localhost;Initial Catalog=Northwind;Persist Security Info=False;User ID=sa;Password=passw0rdMSSQL;MultipleActiveResultSets=False;Encrypt=false;TrustServerCertificate=true;Connection Timeout=30";
+                            options.UseSqlServer("Server=localhost;Initial Catalog=CodewareDB;Persist Security Info=False;User ID=sa;Password=passw0rdMSSQL;MultipleActiveResultSets=False;Encrypt=false;TrustServerCertificate=true;Connection Timeout=30"));
 
             services.AddDbContext<MyApp.Data.NorthwindContext>(options =>
-                            options.UseSqlServer(connectionString));
+                            options.UseSqlServer("Server=localhost;Initial Catalog=Northwind;Persist Security Info=False;User ID=sa;Password=passw0rdMSSQL;MultipleActiveResultSets=False;Encrypt=false;TrustServerCertificate=true;Connection Timeout=30"));
+
+            services.AddDbContext<MyApp.Data.SampleContext>(options =>
+                            options.UseSqlServer("Server=localhost;Initial Catalog=Sample;Persist Security Info=False;User ID=sa;Password=passw0rdMSSQL;MultipleActiveResultSets=False;Encrypt=false;TrustServerCertificate=true;Connection Timeout=30"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,11 +45,32 @@ namespace Sample
         {
             IServiceProvider provider = app.ApplicationServices.GetRequiredService<IServiceProvider>();
 
-            //app.UseMvc(builder => builder.MapODataServiceRoute("odata", "odata/CodewareDb", GetCodewareDbEdmModel(provider)));
+            app.UseMvc(builder => {
+                builder.Count().Filter().OrderBy().Expand().Select().MaxTop(null);
+                builder.MapODataServiceRoute("odata", "odata/CodewareDb", GetCodewareDbEdmModel(provider));
+            });
+
             app.UseMvc(builder => {
                 builder.Count().Filter().OrderBy().Expand().Select().MaxTop(null);
                 builder.MapODataServiceRoute("odata", "odata/Northwind", GetNorthwindEdmModel(provider));
             });
+
+            app.UseMvc(builder => {
+                builder.Count().Filter().OrderBy().Expand().Select().MaxTop(null);
+                builder.MapODataServiceRoute("odata", "odata/Sample", GetSampleEdmModel(provider));
+            });
+        }
+
+        private static IEdmModel GetSampleEdmModel(IServiceProvider provider)
+        {
+            var builder = new ODataConventionModelBuilder(provider);
+            builder.ContainerName = "SampleContext";
+
+            builder.EntitySet<MyApp.Models.Sample.Product>("Products");
+            builder.EntitySet<MyApp.Models.Sample.Order>("Orders");
+            builder.EntitySet<MyApp.Models.Sample.OrderDetail>("OrderDetails");
+
+            return builder.GetEdmModel();
         }
 
         private static IEdmModel GetCodewareDbEdmModel(IServiceProvider provider)

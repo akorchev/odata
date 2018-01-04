@@ -46,7 +46,10 @@ namespace Sample
             IServiceProvider provider = app.ApplicationServices.GetRequiredService<IServiceProvider>();
 
             //app.UseMvc(builder => builder.MapODataServiceRoute("odata", "odata/CodewareDb", GetCodewareDbEdmModel(provider)));
-            app.UseMvc(builder => builder.MapODataServiceRoute("odata", "odata/Northwind", GetNorthwindEdmModel(provider)));
+            app.UseMvc(builder => {
+                builder.Count().Filter().OrderBy().Expand().Select().MaxTop(null);
+                builder.MapODataServiceRoute("odata", "odata/Northwind", GetNorthwindEdmModel(provider));
+            });
         }
 
         private static IEdmModel GetCodewareDbEdmModel(IServiceProvider provider)

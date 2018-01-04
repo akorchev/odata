@@ -28,9 +28,9 @@ namespace MyApp.Controllers.Northwind
     [HttpGet]
     public IEnumerable<Models.Northwind.Customer> Get()
     {
-      var items = this.context.Customers.AsQueryable<Models.Northwind.Customer>().Include(c=>c.Orders);
+      var items = this.context.Customers.AsQueryable();
 
-      //this.OnCustomersRead(ref items);
+      this.OnCustomersRead(ref items);
 
       return items;
     }

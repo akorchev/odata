@@ -24,8 +24,8 @@ namespace MyApp.Controllers.Sample
     {
       this.context = context;
     }
-        // GET /odata/Sample/Orders
-        //[HttpGet]
+
+    [HttpGet]
     public IEnumerable<Models.Sample.Order> Get()
     {
       var items = this.context.Orders.AsQueryable<Models.Sample.Order>();

@@ -10,28 +10,26 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="2.0\**" />
     <Compile Remove="Controllers\**" />
     <Compile Remove="Data\**" />
     <Compile Remove="Models\**" />
+    <Content Remove="2.0\**" />
     <Content Remove="Controllers\**" />
     <Content Remove="Data\**" />
     <Content Remove="Models\**" />
+    <EmbeddedResource Remove="2.0\**" />
     <EmbeddedResource Remove="Controllers\**" />
     <EmbeddedResource Remove="Data\**" />
     <EmbeddedResource Remove="Models\**" />
+    <None Remove="2.0\**" />
     <None Remove="Controllers\**" />
     <None Remove="Data\**" />
     <None Remove="Models\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="Program.cs" />
-    <Compile Remove="Startup.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Program.vb" />
-    <None Remove="Startup.vb" />
+    <None Remove="Program.cs" />
+    <None Remove="Program2.0.cs" />
+    <None Remove="Startup.cs" />
+    <None Remove="Startup2.0.cs" />
   </ItemGroup>
 
   <ItemGroup>

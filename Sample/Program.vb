@@ -1,7 +1,5 @@
-Imports System
 Imports Microsoft.AspNetCore.Hosting
 Imports Microsoft.AspNetCore
-Imports Microsoft.Extensions.DependencyInjection
 Imports Microsoft.AspNetCore.Builder
 
 Module Program
